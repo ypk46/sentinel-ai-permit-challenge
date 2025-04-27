@@ -1,0 +1,24 @@
+services:
+  pdp:
+    image: permitio/pdp-v2:latest
+    container_name: permit-pdp
+    ports:
+      - "7766:7000"
+    environment:
+      - PDP_API_KEY=${PERMIT_API_KEY}
+      - PDP_DEBUG=true
+
+  db:
+    image: pgvector/pgvector:pg17
+    restart: always
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=super_secret
+    volumes:
+      - pg_data:/home/postgres/pgdata/data
+      - ./scripts/db_init.sh:/docker-entrypoint-initdb.d/10_db_init.sh
+
+volumes:
+  pg_data:
