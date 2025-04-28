@@ -3,15 +3,15 @@ import os
 
 import requests
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from google import genai
 from google.genai import types
 from permit import Permit
-from pgvector.psycopg import register_vector, Vector
+from pgvector.psycopg import Vector, register_vector
 from psycopg import connect
 from psycopg.rows import dict_row
 
-from server.models import QueryRequest, QueryResponse
+from server.models import QueryRequest, QueryResponse, UserListResponse
 
 load_dotenv()
 
@@ -202,3 +202,61 @@ async def query(request: QueryRequest):
     }
 
     return response
+
+
+@app.get("/users", response_model=UserListResponse)
+async def get_users(
+    page: int = Query(1, description="Page number"),
+    page_size: int = Query(10, description="Number of users per page"),
+):
+    """
+    Get a list of users.
+
+    Args:
+        page (int): The page number to retrieve.
+        page_size (int): The number of users per page.
+
+    Returns:
+        list: A list of users.
+    """
+    users = await permit.api.users.list(page=page, per_page=page_size)
+
+    data = [
+        {
+            "key": user.key,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "role": user.roles[0].role,
+        }
+        for user in users.data
+    ]
+
+    return {"data": data, "total": len(data), "page": page, "page_size": page_size}
+
+
+@app.get("/documents")
+async def get_documents():
+    """
+    Get a list of documents.
+
+    Returns:
+        list: A list of documents.
+    """
+    # Connect to the PostgreSQL database
+    conn = connect(DATABASE_URL, row_factory=dict_row)
+    register_vector(conn)
+
+    # Create a cursor object
+    cur = conn.cursor()
+
+    # Fetch all documents
+    cur.execute("SELECT id, content, title, key, sensitivity FROM documents;")
+    results = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    print(results)
+
+    return results

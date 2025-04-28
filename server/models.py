@@ -13,3 +13,18 @@ class QueryResponse(BaseModel):
     sources: List[str] = Field(
         ..., description="List of sources used to generate the response."
     )
+
+
+class User(BaseModel):
+    key: str = Field(..., description="The unique key of the user.")
+    first_name: str = Field(..., description="The first name of the user.")
+    last_name: str = Field(..., description="The last name of the user.")
+    email: str = Field(..., description="The email address of the user.")
+    role: str = Field(..., description="The role of the user.")
+
+
+class UserListResponse(BaseModel):
+    data: List[User] = Field(..., description="List of users.")
+    total: int = Field(..., description="Total number of users.")
+    page: int = Field(..., description="Current page number.")
+    page_size: int = Field(..., description="Number of users per page.")
