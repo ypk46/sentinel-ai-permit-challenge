@@ -35,6 +35,7 @@ if __name__ == "__main__":
             content TEXT,
             title TEXT,
             key TEXT,
+            sensitivity TEXT,
             embedding VECTOR(1536)
         );
     """)

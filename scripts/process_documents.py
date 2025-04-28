@@ -57,7 +57,9 @@ def generate_embedding(content: str):
     return embeddings.values
 
 
-def insert_document_to_db(content: str, title: str, key: str, embedding: list):
+def insert_document_to_db(
+    content: str, title: str, key: str, sensitivity: str, embedding: list
+):
     """
     Insert the document into the PostgreSQL database.
 
@@ -65,6 +67,7 @@ def insert_document_to_db(content: str, title: str, key: str, embedding: list):
         content (str): The content of the document.
         title (str): The title of the document.
         key (str): The key of the document.
+        sensitivity (str): The sensitivity level of the document.
         embedding (list): The embedding of the document.
     """
     # Connect to the PostgreSQL database
@@ -77,10 +80,10 @@ def insert_document_to_db(content: str, title: str, key: str, embedding: list):
     # Insert the document into the database
     cur.execute(
         """
-        INSERT INTO documents (content, title, key, embedding)
-        VALUES (%s, %s, %s, %s);
+        INSERT INTO documents (content, title, key, sensitivity, embedding)
+        VALUES (%s, %s, %s, %s, %s);
         """,
-        (content, title, key, embedding),
+        (content, title, key, sensitivity, embedding),
     )
 
     # Commit the changes and close the connection
@@ -195,6 +198,7 @@ async def process_document(file_path: str):
         title=metadata.get("title", "Untitled"),
         key=key,
         embedding=embedding,
+        sensitivity=metadata.get("sensitivity", "low"),
     )
 
     # Synchronize with Permit.io
