@@ -257,6 +257,4 @@ async def get_documents():
     cur.close()
     conn.close()
 
-    print(results)
-
     return results
