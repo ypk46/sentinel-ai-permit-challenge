@@ -12,7 +12,7 @@ from pgvector.psycopg import register_vector
 from psycopg import connect
 
 from permit import Permit
-
+from permit.exceptions import PermitAlreadyExistsError
 
 load_dotenv()
 
@@ -166,8 +166,11 @@ async def sync_to_permit(key: str, metadata: dict):
         },
     }
 
-    # Sync document with Permit.io
-    await permit.api.resource_instances.create(resource_instance_data)
+    try:
+        # Sync document with Permit.io
+        await permit.api.resource_instances.create(resource_instance_data)
+    except PermitAlreadyExistsError:
+        logger.info(f"Document {key} already exists in Permit.io. Skipping.")
 
 
 async def process_document(file_path: str):
