@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: 'https://api.example.com',
+  apiUrl: 'https://sentinel-ai-server.onrender.com',
 };
