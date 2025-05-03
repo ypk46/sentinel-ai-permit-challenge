@@ -1,0 +1,170 @@
+@if (loaded) {
+<mat-drawer-container class="min-h-screen">
+  <mat-drawer [mode]="mode" [opened]="opened">
+    <div class="min-h-screen flex flex-col bg-slate-900 text-white">
+      <!-- Sidenav header -->
+      <div
+        class="flex justify-between items-center p-4 border-b border-gray-700"
+      >
+        <h1 class="text-lg font-bold">Sentinel AI</h1>
+        <button
+          mat-mini-fab
+          aria-label="Hide sidebar"
+          (click)="toggleSidenav()"
+        >
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+      </div>
+
+      <!-- Role selector -->
+      <div class="p-4 border-b border-gray-700">
+        <h2 class="font-semibold mb-2">Change User:</h2>
+
+        <mat-form-field class="w-full">
+          <mat-select
+            [(ngModel)]="userKey"
+            (ngModelChange)="onUserChange($event)"
+          >
+            @for (user of users; track user.key) {
+            <mat-option [value]="user.key"
+              >{{ user.email }} ({{ user.role }})</mat-option
+            >
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="text-xs text-gray-400">
+          <p class="mb-1">
+            Each user has different access to documents based on their role.
+          </p>
+        </div>
+      </div>
+
+      <!-- Document list -->
+      <div class="p-4 flex-1 overflow-auto border-b border-gray-700">
+        <div class="flex justify-between items-center mb-2">
+          <h2
+            class="font-semibold"
+            [matBadge]="documentCount"
+            matBadgeOverlap="false"
+          >
+            Documents
+          </h2>
+        </div>
+
+        @for (document of documents; track document.id) {
+        <div
+          class="p-2 bg-white/10 rounded-md cursor-pointer hover:bg-white/20 transition mb-3"
+        >
+          <div class="flex items-start justify-between mb-2">
+            <span class="text-sm font-medium mr-2">{{ document.title }}</span>
+            <span
+              class="text-xs px-1.5 py-0.5 rounded text-white"
+              [ngClass]="{
+                'bg-green-600': document.sensitivity === 'low',
+                'bg-yellow-600': document.sensitivity === 'medium',
+                'bg-red-600': document.sensitivity === 'high'
+              }"
+            >
+              {{ document.sensitivity }}
+            </span>
+          </div>
+          <p class="text-xs text-gray-400 truncate">
+            {{ document.content }}
+          </p>
+        </div>
+        }
+      </div>
+
+      <!-- Sidenav footer -->
+      <div class="p-4 mt-auto">
+        <p class="text-gray-400 text-xs">
+          This is a demo application to showcase how Permit.io can control
+          access to AI document interactions. Built for DEV Challenge.
+        </p>
+      </div>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <!-- Main content -->
+    <div class="min-h-screen p-4 flex flex-col max-w-4xl mx-auto">
+      <div
+        class="flex flex-col h-full shadow-sm rounded-md bg-white mt-4 flex-1 border border-gray-200"
+      >
+        <!-- Agent chat header -->
+        <div class="border-gray-200 border-b p-4 flex">
+          @if (!opened) {
+          <button
+            mat-icon-button
+            aria-label="Show sidebar"
+            class="mr-2"
+            (click)="toggleSidenav()"
+          >
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+          }
+
+          <div class="flex-1">
+            <h1 class="text-xl font-bold">Sentinel Agent</h1>
+            <p class="text-gray-500 text-sm">
+              Ask questions about your accessible documents.
+            </p>
+          </div>
+        </div>
+
+        <!-- Agent chat interface -->
+        <div
+          class="p-4 flex-1 overflow-auto bg-gray-200/40 border-gray-200 border-b"
+        >
+          <div class="flex justify-start">
+            <div
+              class="max-w-[80%] p-3 rounded-lg bg-white text-gray-600 rounded-tl-none shadow"
+            >
+              <p>
+                Hello! I'm your AI document assistant. I can answer questions
+                about the documents you have access to based on your role. What
+                would you like to know?
+              </p>
+              <div class="text-start">
+                <span class="text-xs mt-1 text-gray-500">09:33 PM</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-4">
+            <div
+              class="max-w-[80%] p-3 rounded-lg bg-slate-800 text-white rounded-tr-none shadow"
+            >
+              <p>
+                Hello! I'm your AI document assistant. I can answer questions
+                about the documents you have access to based on your role. What
+                would you like to know?
+              </p>
+              <div class="text-end">
+                <span class="text-xs mt-1 text-white">09:32 PM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agent chat form -->
+        <form action="" class="p-4 flex gap-2 items-center">
+          <textarea
+            type="text"
+            class="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-slate-100"
+            rows="2"
+          ></textarea>
+
+          <button mat-icon-button aria-label="Hide sidebar">
+            <mat-icon>send</mat-icon>
+          </button>
+        </form>
+      </div>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>
+} @else {
+<div class="flex items-center justify-center h-screen">
+  <mat-spinner></mat-spinner>
+</div>
+}
