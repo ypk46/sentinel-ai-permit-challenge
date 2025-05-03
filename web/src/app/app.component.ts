@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDrawerMode, MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +10,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Document, SentinelService, User } from './sentinel.service';
 import { switchMap } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+
+interface Message {
+  id: number;
+  text: string;
+  sender: 'user' | 'assistant';
+  date: Date;
+}
 
 @Component({
   selector: 'app-root',
@@ -35,6 +42,9 @@ export class AppComponent implements OnInit {
   loaded = false;
   users: User[] = [];
   userKey?: string;
+  today = new Date();
+  inputValue = '';
+  messages: Message[] = [];
 
   constructor(private sentinelService: SentinelService) {}
 
@@ -95,6 +105,31 @@ export class AppComponent implements OnInit {
         return (
           sensitivityOrder[a.sensitivity] - sensitivityOrder[b.sensitivity]
         );
+      });
+    });
+  }
+
+  onSendMessage() {
+    if (this.inputValue.trim() === '') {
+      return;
+    }
+
+    const query = this.inputValue.trim();
+    this.inputValue = '';
+
+    this.messages.push({
+      id: this.messages.length + 1,
+      text: query,
+      sender: 'user',
+      date: new Date(),
+    });
+
+    this.sentinelService.query(this.userKey!, query).subscribe((response) => {
+      this.messages.push({
+        id: this.messages.length + 1,
+        text: response.answer,
+        sender: 'assistant',
+        date: new Date(),
       });
     });
   }

@@ -25,6 +25,11 @@ export interface Document {
   sensitivity: string;
 }
 
+export interface QueryResponse {
+  answer: string;
+  sources: string[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -49,6 +54,13 @@ export class SentinelService {
   getDocuments(userKey: string) {
     return this.http.get<Document[]>(`${environment.apiUrl}/documents`, {
       params: { user_key: userKey },
+    });
+  }
+
+  query(userKey: string, query: string) {
+    return this.http.post<QueryResponse>(`${environment.apiUrl}/query`, {
+      user_key: userKey,
+      query: query,
     });
   }
 }
