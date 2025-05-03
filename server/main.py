@@ -4,6 +4,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types
 from permit import Permit
@@ -40,6 +41,14 @@ app = FastAPI(
     version="0.1.0",
 )
 
+# Configure CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 permit = Permit(token=PERMIT_API_KEY, pdp=PERMIT_PDP_URL)
 
@@ -236,13 +245,14 @@ async def get_users(
 
 
 @app.get("/documents")
-async def get_documents():
+async def get_documents(user_key: str = Query(None, description="User key")):
     """
     Get a list of documents.
 
     Returns:
         list: A list of documents.
     """
+
     # Connect to the PostgreSQL database
     conn = connect(DATABASE_URL, row_factory=dict_row)
     register_vector(conn)
@@ -257,4 +267,11 @@ async def get_documents():
     cur.close()
     conn.close()
 
-    return results
+    if not user_key:
+        return results
+
+    # Get the valid documents for the user
+    valid_docs = get_valid_documents(user_key, "read")
+    filtered_results = [doc for doc in results if doc["key"] in valid_docs]
+
+    return filtered_results
