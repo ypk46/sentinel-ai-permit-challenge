@@ -1,4 +1,4 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDrawerMode, MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,8 +8,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Document, SentinelService, User } from './sentinel.service';
+import { Subject, delay, takeUntil } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 interface Message {
   id: number;
@@ -45,10 +47,31 @@ export class AppComponent implements OnInit {
   today = new Date();
   inputValue = '';
   messages: Message[] = [];
+  $onDestroy = new Subject<void>();
 
-  constructor(private sentinelService: SentinelService) {}
+  constructor(
+    private sentinelService: SentinelService,
+    private responsive: BreakpointObserver
+  ) {}
 
   ngOnInit(): void {
+    // Setup breakpoint observer to detect if device is mobile
+    this.responsive
+      .observe([Breakpoints.Handset, Breakpoints.TabletLandscape])
+      .pipe(takeUntil(this.$onDestroy), delay(1))
+      .subscribe((result) => {
+        // If it matches the breakpoints, display UI for mobile
+        if (result.matches) {
+          this.opened = false;
+          this.mode = 'over';
+        }
+        // Otherwise, display UI for widescreen devices
+        else {
+          this.opened = true;
+          this.mode = 'side';
+        }
+      });
+
     this.sentinelService.getUsers().subscribe((response) => {
       this.users = response.data;
       this.userKey = this.users.find((user) => user.role === 'user')?.key;
