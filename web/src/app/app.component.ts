@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDrawerMode, MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,8 @@ import { Subject, delay, takeUntil } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DocViewerComponent } from './doc-viewer/doc-viewer.component';
 
 interface Message {
   id: number;
@@ -32,6 +34,7 @@ interface Message {
     MatFormFieldModule,
     MatProgressSpinnerModule,
     MatBadgeModule,
+    MatDialogModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -51,7 +54,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private sentinelService: SentinelService,
-    private responsive: BreakpointObserver
+    private responsive: BreakpointObserver,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -154,6 +158,12 @@ export class AppComponent implements OnInit {
         sender: 'assistant',
         date: new Date(),
       });
+    });
+  }
+
+  openDocument(document: Document) {
+    const dialogRef = this.dialog.open(DocViewerComponent, {
+      data: { document },
     });
   }
 }

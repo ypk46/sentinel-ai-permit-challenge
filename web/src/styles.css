@@ -18,3 +18,36 @@ body {
 .mat-badge-content {
   background-color: #00458f !important;
 }
+
+markdown {
+  font-size: 1em;
+  line-height: 1.5;
+  color: #1f1f1f;
+}
+
+markdown h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.5em 0;
+}
+
+markdown h2 {
+  font-size: 1.25em;
+  font-weight: bold;
+  margin: 0.5em 0;
+}
+
+markdown h3 {
+  font-size: 1.125em;
+  font-weight: bold;
+  margin: 0.5em 0;
+}
+
+markdown ul {
+  list-style-type: disc;
+  margin-left: 1.5em;
+}
+
+markdown p {
+  margin: 0.5em 0;
+}

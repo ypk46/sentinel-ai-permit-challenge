@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Document Viewer</h2>
+
+<mat-dialog-content>
+  <p
+    class="text-xs inline-block px-1.5 py-0.5 rounded text-white"
+    [ngClass]="{
+      'bg-green-600': document.sensitivity === 'low',
+      'bg-yellow-600': document.sensitivity === 'medium',
+      'bg-red-600': document.sensitivity === 'high'
+    }"
+  >
+    {{ document.sensitivity }}
+  </p>
+  <markdown [data]="document.content"></markdown>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

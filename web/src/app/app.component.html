@@ -55,6 +55,7 @@
         @for (document of documents; track document.id) {
         <div
           class="p-2 bg-white/10 rounded-md cursor-pointer hover:bg-white/20 transition mb-3"
+          (click)="openDocument(document)"
         >
           <div class="flex items-start justify-between mb-2">
             <span class="text-sm font-medium mr-2">{{ document.title }}</span>
