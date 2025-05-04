@@ -88,7 +88,7 @@
   </mat-drawer>
   <mat-drawer-content>
     <!-- Main content -->
-    <div class="min-h-screen p-4 flex flex-col max-w-4xl mx-auto">
+    <div class="h-screen p-4 flex flex-col max-w-4xl mx-auto">
       <div
         class="flex flex-col h-full shadow-sm rounded-md bg-white mt-4 flex-1 border border-gray-200"
       >
@@ -115,7 +115,7 @@
 
         <!-- Agent chat interface -->
         <div
-          class="p-4 flex-1 overflow-auto bg-gray-200/40 border-gray-200 border-b"
+          class="p-4 flex-1 overflow-y-scroll bg-gray-200/40 border-gray-200 border-b"
         >
           <div class="flex justify-start">
             <div
@@ -180,6 +180,7 @@
             rows="2"
             placeholder="Ask me anything about your documents..."
             [(ngModel)]="inputValue"
+            (keyup.Enter)="onSendMessage()"
           ></textarea>
 
           <button
