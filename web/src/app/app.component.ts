@@ -166,4 +166,8 @@ export class AppComponent implements OnInit {
       data: { document },
     });
   }
+
+  onCloseSidenav() {
+    this.opened = false;
+  }
 }

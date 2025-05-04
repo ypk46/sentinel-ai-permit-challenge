@@ -1,6 +1,6 @@
 @if (loaded) {
 <mat-drawer-container class="min-h-screen">
-  <mat-drawer [mode]="mode" [opened]="opened">
+  <mat-drawer [mode]="mode" [opened]="opened" (closed)="onCloseSidenav()">
     <div class="min-h-screen flex flex-col bg-slate-900 text-white">
       <!-- Sidenav header -->
       <div
@@ -88,7 +88,7 @@
   </mat-drawer>
   <mat-drawer-content>
     <!-- Main content -->
-    <div class="h-screen p-4 flex flex-col max-w-4xl mx-auto">
+    <div class="md:h-screen h-dvh p-4 flex flex-col max-w-4xl mx-auto">
       <div
         class="flex flex-col h-full shadow-sm rounded-md bg-white mt-4 flex-1 border border-gray-200"
       >
