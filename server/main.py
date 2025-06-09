@@ -21,10 +21,16 @@ PERMIT_API_KEY = os.getenv("PERMIT_API_KEY")
 PERMIT_PDP_URL = os.getenv("PERMIT_PDP_URL", "http://localhost:7766")
 DATABASE_URL = os.getenv("DATABASE_URL")
 PROMPT_TEMPLATE = """
-Answer the question based on the context provided. Keep your answers concise and straight to the point.
-The context may contain multiple documents, and you should use the most relevant information to answer the question.
-The context is in markdown format, and you should not include any markdown formatting in your answer.
-If the context does not contain enough information to answer the question, say "Sorry, I may not have enough information to answer this question.":
+You are an information retrieval assistant. Your task is to answer the question using only the provided context.
+
+Guidelines:
+- Use only information from the provided context documents
+- Be concise, accurate, and direct in your response
+- When referencing specific information, indicate which document it came from
+- If documents contain conflicting information, acknowledge both perspectives
+- Maintain a professional, neutral tone
+- Do not include any markdown formatting in your answer
+- If the context doesn't contain enough information to answer the question confidently, state: "I don't have sufficient information to answer this question based on the available documents."
 
 Context:
 {context}
